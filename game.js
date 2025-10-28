@@ -23,6 +23,14 @@ let debugMode = false;
 let uiText = {};
 let roundTimer = 60; // 60 seconds per round
 let roundStartTime = 0;
+let roundState = { phase: 'ready', timer: 0 }; // ready, announce, fight, playing
+
+// Audio system for background music
+let audioCtx = null;
+let musicRunning = false;
+let musicTimerId = null;
+let currentBPM = 90;
+let urgentMode = false;
 
 // Fighter sprite patterns (10x10, optimized for better readability)
 const fighterSprites = {
@@ -336,11 +344,11 @@ const attacks = {
     ],
     hurtboxes: [
       // NO HURTBOXES during active frames (invulnerable)
-      { frame: 18, x: -60, y: 0, w: 120, h: 100 }, // Recovery start - very exposed
-      { frame: 25, x: -55, y: 0, w: 110, h: 100 }, // Still very exposed
-      { frame: 35, x: -50, y: 0, w: 100, h: 100 }, // Gradually less exposed
-      { frame: 45, x: -45, y: 0, w: 90, h: 100 },  // Getting back to normal
-      { frame: 60, x: -50, y: 0, w: 80, h: 100 }   // Back to normal
+      { frame: 18, boxes: [{ x: -60, y: 0, w: 120, h: 100 }] }, // Recovery start - very exposed
+      { frame: 25, boxes: [{ x: -55, y: 0, w: 110, h: 100 }] }, // Still very exposed
+      { frame: 35, boxes: [{ x: -50, y: 0, w: 100, h: 100 }] }, // Gradually less exposed
+      { frame: 45, boxes: [{ x: -45, y: 0, w: 90, h: 100 }] },  // Getting back to normal
+      { frame: 60, boxes: [{ x: -50, y: 0, w: 80, h: 100 }] }   // Back to normal
     ],
     invulnerable: true,
     invulnerableFrames: 17,
@@ -695,31 +703,31 @@ function create() {
   player2.scene = scene;
   
   // UI Text
-  uiText.health1 = this.add.text(50, 75, 'P1: 100', {
+  uiText.health1 = this.add.text(50, 140, 'P1: 100', {
     fontSize: '24px',
     fontFamily: 'Arial, sans-serif',
     color: '#00ff00'
   });
   
-  uiText.health2 = this.add.text(650, 75, 'P2: 100', {
+  uiText.health2 = this.add.text(650, 140, 'P2: 100', {
     fontSize: '24px',
     fontFamily: 'Arial, sans-serif',
     color: '#ff0000'
   });
   
-  uiText.rounds = this.add.text(400, 85, 'Round 1', {
+  uiText.rounds = this.add.text(400, 90, 'Round 1', {
     fontSize: '20px',
     fontFamily: 'Arial, sans-serif',
     color: '#ffff00'
   }).setOrigin(0.5);
   
-  uiText.guards1 = this.add.text(50, 110, 'Guards: 0/3', {
+  uiText.guards1 = this.add.text(50, 170, 'Guards: 0/3', {
     fontSize: '16px',
     fontFamily: 'Arial, sans-serif',
     color: '#88ff88'
   });
   
-  uiText.guards2 = this.add.text(650, 110, 'Guards: 0/3', {
+  uiText.guards2 = this.add.text(650, 170, 'Guards: 0/3', {
     fontSize: '16px',
     fontFamily: 'Arial, sans-serif',
     color: '#ff8888'
@@ -746,6 +754,15 @@ function create() {
     color: '#666666',
     align: 'center'
   }).setOrigin(0.5);
+  
+  // Round announcement text (initially hidden)
+  uiText.announcement = this.add.text(400, 300, '', {
+    fontSize: '64px',
+    fontFamily: 'Arial, sans-serif',
+    color: '#ffff00',
+    align: 'center'
+  }).setOrigin(0.5);
+  uiText.announcement.setVisible(false);
   
   // Keyboard input
   this.input.keyboard.on('keydown', handleKeyDown);
@@ -865,11 +882,45 @@ function drawSprite(sprite, x, y, color, facingRight = true) {
 function update(_time, delta) {
   if (gameState === 'gameover' || gameState === 'roundEnd') return;
   
+  // Handle round phases
+  if (roundState.phase === 'ready') {
+    roundState.phase = 'announce';
+    roundState.timer = 1000; // 1 second for "Round X"
+    return; // Don't process anything else
+  }
+  
+  if (roundState.phase === 'announce') {
+    roundState.timer -= delta;
+    if (roundState.timer <= 0) {
+      roundState.phase = 'fight';
+      roundState.timer = 500; // 0.5 seconds for "Fight!"
+    }
+    return; // Don't process anything else
+  }
+  
+  if (roundState.phase === 'fight') {
+    roundState.timer -= delta;
+    if (roundState.timer <= 0) {
+      roundState.phase = 'playing';
+      roundStartTime = _time;
+      // Small delay before starting music to ensure clean start
+      setTimeout(() => {
+        initAudioContext(); // Initialize audio on first user interaction
+        startMusic(); // Start background music
+      }, 100);
+    }
+    return; // Don't process anything else
+  }
+  
   // Update round timer
-  if (gameState === 'playing') {
-    if (roundStartTime === 0) roundStartTime = _time;
+  if (gameState === 'playing' && roundState.phase === 'playing') {
     const elapsed = (_time - roundStartTime) / 1000;
     roundTimer = Math.max(0, 60 - elapsed);
+    
+    // Check for urgent mode (time or health)
+    const lowTime = roundTimer <= 15;
+    const lowHealth = (player1.health <= 25) || (player2.health <= 25);
+    setMusicUrgent(lowTime || lowHealth);
     
     // Check for timeout
     if (roundTimer <= 0 && gameState === 'playing') {
@@ -884,6 +935,9 @@ function update(_time, delta) {
       }
     }
   }
+  
+  // Only process inputs during playing phase
+  if (roundState.phase !== 'playing') return;
   
   // Process attack inputs
   player1.processAttackInput();
@@ -1026,6 +1080,7 @@ function endRound(winner = null) {
   
   if (player1.roundsWon >= 2 || player2.roundsWon >= 2) {
     gameState = 'gameover';
+    stopMusic(); // Stop music when game ends
     const winner = player1.roundsWon >= 2 ? 'Player 1' : 'Player 2';
     
     // Show game over screen
@@ -1051,6 +1106,7 @@ function endRound(winner = null) {
   } else {
     // Show round winner first, then reset for next round
     gameState = 'roundEnd';
+    stopMusic(); // Stop music when round ends
     const roundWinner = player1.health <= 0 ? 'Player 2' : 'Player 1';
     
     setTimeout(() => {    
@@ -1087,9 +1143,11 @@ function endRound(winner = null) {
         player2.hitStun = 0;
         player1.blockStun = 0;
         player2.blockStun = 0;
-        // Reset timer for new round
+        // Reset timer and round state for new round
         roundTimer = 60;
         roundStartTime = 0;
+        roundState = { phase: 'ready', timer: 0 };
+        stopMusic(); // Stop current music
         gameState = 'playing'; // Resume game
       }, 2000);
     }, 100);
@@ -1116,6 +1174,8 @@ function resetRound() {
   player2.blockStun = 0;
   roundTimer = 60;
   roundStartTime = 0;
+  roundState = { phase: 'ready', timer: 0 };
+  stopMusic();
   gameState = 'playing';
 }
 
@@ -1141,6 +1201,18 @@ function updateUI() {
   const timerColor = roundTimer <= 10 ? '#ff0000' : '#ffffff';
   uiText.timer.setText(timerText.toString());
   uiText.timer.setColor(timerColor);
+  
+  // Update announcement text based on round phase
+  if (roundState.phase === 'announce') {
+    const totalRounds = player1.roundsWon + player2.roundsWon + 1;
+    uiText.announcement.setText(`Round ${totalRounds}`);
+    uiText.announcement.setVisible(true);
+  } else if (roundState.phase === 'fight') {
+    uiText.announcement.setText('Fight!');
+    uiText.announcement.setVisible(true);
+  } else {
+    uiText.announcement.setVisible(false);
+  }
   
   // Update health bar colors based on health
   if (player1.health < 30) {
@@ -1182,9 +1254,11 @@ function restartGame() {
   player2.hitStun = 0;
   player1.blockStun = 0;
   player2.blockStun = 0;
-  // Reset timer
+  // Reset timer and round state
   roundTimer = 60;
   roundStartTime = 0;
+  roundState = { phase: 'ready', timer: 0 };
+  stopMusic(); // Stop current music
   player1.invulnerableTimer = 0;
   player2.invulnerableTimer = 0;
   player1.attackButtonPressed = false;
@@ -1241,10 +1315,22 @@ function drawGame() {
   drawHealthBar(100, 30, player1.health, player1.maxHealth, 0x00ff00);
   drawHealthBar(500, 30, player2.health, player2.maxHealth, 0xff0000);
   
-  // Draw timer background box
+  // Draw timer background box with urgent flashing
+  const timerFlashFrame = Math.floor(Date.now() / 200) % 2; // Flash every 200ms
+  const lowTime = roundTimer <= 15;
+  const lowHealth = (player1.health <= 25) || (player2.health <= 25);
+  const urgent = lowTime || lowHealth;
+  
   graphics.fillStyle(0x000000, 0.8);
   graphics.fillRect(350, 25, 100, 50);
-  graphics.lineStyle(2, 0xffffff);
+  
+  if (urgent && timerFlashFrame) {
+    graphics.lineStyle(3, 0xff0000); // Red flash
+  } else if (urgent) {
+    graphics.lineStyle(3, 0xffffff); // White flash
+  } else {
+    graphics.lineStyle(2, 0xffffff); // Normal
+  }
   graphics.strokeRect(350, 25, 100, 50);
   
   // Draw round indicators
@@ -1279,14 +1365,14 @@ function drawRoundIndicators() {
   for (let i = 0; i < 2; i++) {
     const color = i < player1.roundsWon ? 0x00ff00 : 0x333333;
     graphics.fillStyle(color, 1);
-    graphics.fillCircle(120 + i * 20, 85, 8);
+    graphics.fillCircle(120 + i * 20, 95, 8);
   }
   
   // Player 2 rounds
   for (let i = 0; i < 2; i++) {
     const color = i < player2.roundsWon ? 0xff0000 : 0x333333;
     graphics.fillStyle(color, 1);
-    graphics.fillCircle(660 + i * 20, 85, 8);
+    graphics.fillCircle(660 + i * 20, 95, 8);
   }
 }
 
@@ -1431,4 +1517,118 @@ function playTone(scene, frequency, duration) {
 
   oscillator.start(audioContext.currentTime);
   oscillator.stop(audioContext.currentTime + duration);
+}
+
+// Background music system
+function initAudioContext() {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      console.warn('Audio context creation failed:', e);
+      return false;
+    }
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+  return true;
+}
+
+function freqFromSemitone(n) { 
+  const A4 = 440;
+  return A4 * Math.pow(2, n/12); 
+}
+
+function playMusicTone(time, freq, dur, type='saw', vol=0.08) {
+  if (!audioCtx) return;
+  const o = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  o.type = type; 
+  o.frequency.value = freq;
+  g.gain.setValueAtTime(0, time);
+  g.gain.linearRampToValueAtTime(vol, time + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+  o.connect(g); 
+  g.connect(audioCtx.destination);
+  o.start(time); 
+  o.stop(time + dur + 0.02);
+}
+
+function playClick(time) {
+  // short high click (metronome) - reduced volume
+  playMusicTone(time, 2000, 0.02, 'square', 0.02);
+}
+
+function scheduleMusic(startAt) {
+  if (!audioCtx || !musicRunning) return;
+  
+  const beatSec = 60 / currentBPM;
+  const melody = [
+    [0, 1], [2, 1], [4, 1], [5, 1],     // simple motif
+    [4, 1], [2, 1], [0, 2]
+  ];
+  
+  let t = startAt;
+  const barBeats = 4;
+  const lookaheadBars = 2; // Reduced from 4 to 2 to avoid too much lookahead
+  
+  for(let bar = 0; bar < lookaheadBars; bar++) {
+    // metronome on each beat - reduced volume
+    for(let b = 0; b < barBeats; b++) {
+      if (t + b * beatSec > audioCtx.currentTime) { // Only schedule future events
+        playClick(t + b * beatSec);
+      }
+    }
+    // schedule melody starting at beginning of bar
+    let cursor = t;
+    for(const [semi, len] of melody) {
+      if (cursor > audioCtx.currentTime) { // Only schedule future events
+        const f = freqFromSemitone(semi - 9); // shift motif so it sounds nice
+        playMusicTone(cursor, f, len * beatSec, 'sine', urgentMode ? 0.06 : 0.04); // Reduced volume
+        cursor += len * beatSec;
+      }
+    }
+    t += barBeats * beatSec;
+  }
+}
+
+function startMusic() {
+  // Always stop any existing music first
+  stopMusic();
+  
+  initAudioContext();
+  if (!audioCtx) return;
+  
+  const startAt = audioCtx.currentTime + 0.1;
+  scheduleMusic(startAt);
+  // keep rescheduling periodically - but with longer intervals to avoid overlap
+  musicTimerId = setInterval(() => {
+    if (audioCtx && musicRunning) {
+      scheduleMusic(audioCtx.currentTime + 0.1);
+    }
+  }, 2000); // Increased from 1000ms to 2000ms to reduce overlap
+  musicRunning = true;
+}
+
+function stopMusic() {
+  if (musicTimerId) {
+    clearInterval(musicTimerId);
+    musicTimerId = null;
+  }
+  musicRunning = false;
+  urgentMode = false;
+  currentBPM = 90; // Reset to normal BPM
+}
+
+function setMusicUrgent(urgent) {
+  if (urgent !== urgentMode) {
+    urgentMode = urgent;
+    const newBPM = urgent ? 160 : 90;
+    if (newBPM !== currentBPM) {
+      currentBPM = newBPM;
+      // Don't restart music immediately, let it transition naturally
+      // The BPM change will take effect in the next scheduled cycle
+    }
+  }
 }
