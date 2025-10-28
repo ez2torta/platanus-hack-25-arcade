@@ -62,52 +62,52 @@ const fighterSprites = {
     [1,1,0,0,0,0,0,1,1,0]
   ],
   p1_attack_low: [
-    [0,0,0,0,1,1,0,0,0,0],  // Head normal
-    [0,0,0,1,1,1,1,0,0,0],  // Face normal
-    [0,0,1,0,1,1,0,1,0,0],  // Eyes normal
-    [0,0,1,1,1,1,1,1,0,0],  // Body normal
-    [0,0,0,1,1,1,1,0,0,0],  // Torso normal
-    [0,0,1,1,1,1,1,1,0,0],  // Body stretching
-    [1,1,1,1,1,1,1,1,1,1],  // WIDE lower body - attack zone
-    [1,1,1,0,1,1,0,1,1,1],  // EXPANDED legs attacking
-    [1,1,1,0,0,0,0,1,1,1],  // WIDE stance for low attack
-    [1,1,1,1,0,0,1,1,1,1]   // MAXIMUM width at bottom
+    [0,0,1,1,0,0,0,0,0,0],  // Head (player position)
+    [0,1,1,1,1,0,0,0,0,0],  // Face (player body)
+    [1,0,1,1,0,0,0,0,0,0],  // Eyes (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [0,1,1,1,0,0,0,0,0,0],  // Torso (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Normal body position
+    [1,0,1,1,1,1,1,0,0,0],  // LOW ATTACK extending right
+    [1,0,0,1,1,1,1,1,1,0],  // LOW KICK extending forward
+    [1,1,0,0,1,1,1,1,1,1]   // MAXIMUM low attack reach
   ],
   p1_attack_mid: [
-    [0,0,0,0,1,1,0,0,0,0],  // Head normal
-    [0,0,0,1,1,1,1,0,0,0],  // Face normal
-    [0,0,1,0,1,1,0,1,0,0],  // Eyes normal
-    [1,1,1,1,1,1,1,1,1,1],  // WIDE arms extending
-    [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM width at mid level
-    [1,1,1,1,1,1,1,1,1,1],  // Body stretched for mid attack
-    [0,0,1,1,1,1,1,1,0,0],  // Body contracting back
-    [0,0,1,0,1,1,0,1,0,0],  // Normal lower
-    [0,0,1,0,0,0,0,1,0,0],  // Normal stance
-    [0,1,1,0,0,0,0,1,1,0]   // Normal feet
+    [0,0,1,1,0,0,0,0,0,0],  // Head (player position)
+    [0,1,1,1,1,0,0,0,0,0],  // Face (player body)
+    [1,0,1,1,0,0,0,0,0,0],  // Eyes (player body)
+    [1,1,1,1,1,1,1,1,1,1],  // MID PUNCH extending right
+    [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM mid attack reach
+    [1,1,1,1,1,1,1,1,1,1],  // Full extension at mid level
+    [0,1,1,1,0,0,0,0,0,0],  // Back to player body
+    [1,0,1,1,0,0,0,0,0,0],  // Normal lower body
+    [1,0,0,0,0,0,0,0,0,0],  // Normal stance
+    [1,1,0,0,0,0,0,0,0,0]   // Normal feet (player body)
   ],
   p1_donkey_kick: [
-    [0,0,0,0,1,1,0,0,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,0,0,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,1,0,1,1,0,0,0,0],
-    [0,1,1,0,1,1,1,0,0,0],  // Kick stretching forward
-    [1,1,1,0,1,1,1,1,0,0],  // Full kick extension
-    [1,1,1,0,0,1,1,1,1,0]   // Ground kick impact
+    [0,0,1,1,0,0,0,0,0,0],  // Head (player position)
+    [0,1,1,1,1,0,0,0,0,0],  // Face (player body)
+    [1,0,1,1,0,0,0,0,0,0],  // Eyes (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [0,1,1,1,0,0,0,0,0,0],  // Torso (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [1,0,1,0,0,0,0,0,0,0],  // Player stance
+    [1,1,0,1,1,1,1,0,0,0],  // KICK extending forward
+    [1,1,0,0,1,1,1,1,1,0],  // FULL KICK extension
+    [1,1,0,0,0,1,1,1,1,1]   // MAXIMUM kick reach
   ],
   p1_shoryu: [
-    [1,1,1,1,1,1,1,1,1,1],  // Full upper reach
-    [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut area
-    [0,0,1,0,1,1,0,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,1,1,0],  // Expanded rising attack
+    [1,1,1,1,1,1,1,1,1,1],  // UPPERCUT full reach at top
+    [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut maximum area
+    [1,0,1,0,1,1,0,1,1,1],  // Upper attack zone
+    [1,1,1,1,1,1,1,1,1,1],  // Full power uppercut
+    [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM rising attack
     [1,1,1,1,1,1,1,1,1,1],  // Full power zone
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,0,1,1,0,1,0,0],
-    [0,0,1,0,0,0,0,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0]
+    [0,1,1,1,1,0,0,0,0,0],  // Back to player body
+    [1,0,1,1,0,0,0,0,0,0],  // Player body
+    [1,0,0,0,0,0,0,0,0,0],  // Player stance
+    [1,1,1,1,0,0,0,0,0,0]   // Player feet
   ],
   p1_hit: [
     [0,0,0,1,1,1,1,0,0,0],
@@ -160,52 +160,52 @@ const fighterSprites = {
     [0,1,1,0,0,0,0,1,1,1]
   ],
   p2_attack_low: [
-    [0,0,0,0,1,1,0,0,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,0,0,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,0,1,1,0,1,0,0],
-    [0,1,1,1,0,0,1,1,1,0],  // Expanded low attack area
-    [1,1,1,1,1,1,1,1,1,1]   // Full bottom row for low attack
+    [0,0,0,0,0,0,1,1,0,0],  // Head (player position - P2 faces left)
+    [0,0,0,0,0,1,1,1,1,0],  // Face (player body)  
+    [0,0,0,0,0,0,1,1,0,1],  // Eyes (player body)
+    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
+    [0,0,0,0,0,0,1,1,1,0],  // Torso (player body)
+    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
+    [0,0,0,0,0,0,1,1,1,1],  // Normal body position
+    [0,0,0,1,1,1,1,0,1,1],  // LOW ATTACK extending left
+    [0,1,1,1,1,1,1,0,0,1],  // LOW KICK extending forward (left)
+    [1,1,1,1,1,1,0,0,1,1]   // MAXIMUM low attack reach
   ],
   p2_attack_mid: [
-    [0,0,0,0,1,1,0,0,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,0,0,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,1,1,0],  // Expanded mid attack area
-    [1,1,1,1,1,1,1,1,1,1],  // Full mid row for mid attack
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,0,1,1,0,1,0,0],
-    [0,0,1,0,0,0,0,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0]
+    [0,0,0,0,0,0,1,1,0,0],  // Head (player position - P2 faces left)
+    [0,0,0,0,0,1,1,1,1,0],  // Face (player body)
+    [0,0,0,0,0,0,1,1,0,1],  // Eyes (player body)
+    [0,0,0,0,0,0,1,1,1,1],  // Body upper (player body)
+    [0,0,1,1,1,1,1,1,1,1],  // MID PUNCH extending left
+    [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM mid attack reach
+    [0,0,0,0,0,0,1,1,1,0],  // Back to player body
+    [0,0,0,0,0,0,1,1,0,1],  // Normal body
+    [0,0,0,0,0,0,0,0,0,1],  // Normal stance
+    [0,0,0,0,0,0,1,1,1,1]   // Normal feet (player body)
   ],
   p2_donkey_kick: [
-    [0,0,0,0,1,1,0,0,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,0,0,1,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,0,0,0,1,1,0,1,0,0],
-    [0,0,0,1,1,1,0,1,1,0],  // Kick stretching backwards
-    [0,1,1,1,1,1,0,1,1,1],  // Full kick extension
-    [1,1,1,1,1,0,0,1,1,1]   // Ground kick impact
+    [0,0,0,0,0,0,1,1,0,0],  // Head (player position - P2 faces left)
+    [0,0,0,0,0,1,1,1,1,0],  // Face (player body)
+    [0,0,0,0,0,0,1,1,0,1],  // Eyes (player body)
+    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
+    [0,0,0,0,0,0,1,1,1,0],  // Torso (player body)
+    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
+    [0,0,0,0,0,0,0,1,0,1],  // Player stance
+    [0,0,0,1,1,1,1,0,1,1],  // KICK extending left
+    [0,1,1,1,1,1,0,0,1,1],  // FULL KICK extension
+    [1,1,1,1,1,0,0,0,1,1]   // MAXIMUM kick reach
   ],
   p2_shoryu: [
-    [1,1,1,1,1,1,1,1,1,1],  // Full upper reach
-    [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut area
-    [0,0,1,0,1,1,0,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,1,1,1,1,1,1,0],  // Expanded rising attack
+    [1,1,1,1,1,1,1,1,1,1],  // UPPERCUT full reach at top
+    [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut maximum area
+    [1,1,1,0,1,1,0,1,0,1],  // Upper attack zone
+    [1,1,1,1,1,1,1,1,1,1],  // Full power uppercut
+    [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM rising attack
     [1,1,1,1,1,1,1,1,1,1],  // Full power zone
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,0,1,1,0,1,0,0],
-    [0,0,1,0,0,0,0,1,0,0],
-    [0,0,1,1,1,1,1,1,0,0]
+    [0,0,0,0,0,1,1,1,1,0],  // Back to player body
+    [0,0,0,0,0,0,1,1,0,1],  // Player body
+    [0,0,0,0,0,0,0,0,0,1],  // Player stance
+    [0,0,0,0,0,0,1,1,1,1]   // Player feet
   ],
   p2_hit: [
     [0,0,0,1,1,1,1,0,0,0],
@@ -230,14 +230,14 @@ const attacks = {
     recovery: 12,
     damage: 12,
     hitboxes: [
-      { frame: 5, x: 0, y: 60, w: 40, h: 30 },   // Startup hit
-      { frame: 6, x: 5, y: 58, w: 42, h: 32 },   // Active frame 1
-      { frame: 7, x: 8, y: 55, w: 45, h: 35 },   // Active frame 2 (bigger)
-      { frame: 8, x: 10, y: 58, w: 43, h: 32 },  // Active frame 3
-      { frame: 9, x: 8, y: 60, w: 40, h: 30 },   // Active frame 4
-      { frame: 10, x: 5, y: 62, w: 38, h: 28 },  // Active frame 5 (smaller)
-      { frame: 11, x: 2, y: 64, w: 35, h: 25 },  // Final active
-      { frame: 12, x: 0, y: 65, w: 30, h: 20 }   // Last hit
+      { frame: 5, x: -10, y: 60, w: 50, h: 30 },   // Start closer, extend further
+      { frame: 6, x: -5, y: 58, w: 55, h: 32 },    // Active frame 1
+      { frame: 7, x: 0, y: 55, w: 60, h: 35 },     // Active frame 2 (bigger)
+      { frame: 8, x: 5, y: 58, w: 58, h: 32 },     // Active frame 3
+      { frame: 9, x: 0, y: 60, w: 55, h: 30 },     // Active frame 4
+      { frame: 10, x: -5, y: 62, w: 50, h: 28 },   // Active frame 5
+      { frame: 11, x: -8, y: 64, w: 45, h: 25 },   // Final active
+      { frame: 12, x: -10, y: 65, w: 40, h: 20 }   // Last hit
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 }
   },
@@ -248,15 +248,15 @@ const attacks = {
     recovery: 12,
     damage: 18,
     hitboxes: [
-      { frame: 8, x: 0, y: 30, w: 50, h: 40 },   // First hit
-      { frame: 9, x: 5, y: 28, w: 52, h: 42 },   // Expanding
-      { frame: 10, x: 8, y: 25, w: 55, h: 45 },  // Peak size
-      { frame: 11, x: 10, y: 27, w: 53, h: 43 }, // Maintaining
-      { frame: 12, x: 12, y: 25, w: 55, h: 45 }, // Strong frame
-      { frame: 13, x: 10, y: 28, w: 50, h: 40 }, // Reducing
-      { frame: 14, x: 8, y: 30, w: 48, h: 38 },  // Smaller
-      { frame: 15, x: 5, y: 32, w: 45, h: 35 },  // Final
-      { frame: 16, x: 2, y: 35, w: 40, h: 30 }   // Last hit
+      { frame: 8, x: -10, y: 30, w: 60, h: 40 },   // Start closer, extend further
+      { frame: 9, x: -5, y: 28, w: 65, h: 42 },    // Expanding
+      { frame: 10, x: 0, y: 25, w: 70, h: 45 },    // Peak size
+      { frame: 11, x: 5, y: 27, w: 68, h: 43 },    // Maintaining
+      { frame: 12, x: 8, y: 25, w: 70, h: 45 },    // Strong frame
+      { frame: 13, x: 5, y: 28, w: 65, h: 40 },    // Reducing
+      { frame: 14, x: 0, y: 30, w: 60, h: 38 },    // Smaller
+      { frame: 15, x: -5, y: 32, w: 55, h: 35 },   // Final
+      { frame: 16, x: -8, y: 35, w: 50, h: 30 }    // Last hit
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 }
   },
@@ -267,17 +267,17 @@ const attacks = {
     recovery: 18,
     damage: 25,
     hitboxes: [
-      { frame: 15, x: 20, y: 40, w: 60, h: 40 }, // Initial kick
-      { frame: 16, x: 25, y: 38, w: 65, h: 42 }, // Extending
-      { frame: 17, x: 28, y: 35, w: 68, h: 45 }, // Max reach
-      { frame: 18, x: 30, y: 33, w: 70, h: 47 }, // Peak power
-      { frame: 19, x: 32, y: 35, w: 68, h: 45 }, // Strong
-      { frame: 20, x: 30, y: 38, w: 65, h: 42 }, // Maintaining
-      { frame: 21, x: 28, y: 40, w: 62, h: 40 }, // Reducing
-      { frame: 22, x: 25, y: 42, w: 58, h: 38 }, // Weaker
-      { frame: 23, x: 22, y: 44, w: 55, h: 35 }, // Final
-      { frame: 24, x: 20, y: 45, w: 50, h: 32 }, // Last hit
-      { frame: 25, x: 18, y: 47, w: 45, h: 30 }  // Very last
+      { frame: 15, x: -5, y: 40, w: 70, h: 40 }, // Start closer, extend further
+      { frame: 16, x: 0, y: 38, w: 75, h: 42 },  // Extending
+      { frame: 17, x: 5, y: 35, w: 80, h: 45 },  // Max reach
+      { frame: 18, x: 10, y: 33, w: 82, h: 47 }, // Peak power
+      { frame: 19, x: 12, y: 35, w: 80, h: 45 }, // Strong
+      { frame: 20, x: 10, y: 38, w: 75, h: 42 }, // Maintaining
+      { frame: 21, x: 5, y: 40, w: 70, h: 40 },  // Reducing
+      { frame: 22, x: 0, y: 42, w: 65, h: 38 },  // Weaker
+      { frame: 23, x: -5, y: 44, w: 60, h: 35 }, // Final
+      { frame: 24, x: -8, y: 45, w: 55, h: 32 }, // Last hit
+      { frame: 25, x: -10, y: 47, w: 50, h: 30 } // Very last
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 },
     movement: { x: 3, y: 0 }
@@ -289,22 +289,22 @@ const attacks = {
     recovery: 41,
     damage: 35,
     hitboxes: [
-      { frame: 2, x: 10, y: -20, w: 50, h: 80 },  // Rising start
-      { frame: 3, x: 12, y: -30, w: 52, h: 90 },  // Going up
-      { frame: 4, x: 15, y: -35, w: 55, h: 95 },  // Higher
-      { frame: 5, x: 15, y: -40, w: 55, h: 100 }, // Peak start
-      { frame: 6, x: 18, y: -50, w: 58, h: 110 }, // Rising more
-      { frame: 7, x: 20, y: -55, w: 60, h: 115 }, // Higher
-      { frame: 8, x: 20, y: -60, w: 60, h: 120 }, // Maximum height
-      { frame: 9, x: 22, y: -58, w: 58, h: 118 }, // Peak power
-      { frame: 10, x: 20, y: -55, w: 60, h: 115 },// Strong at top
-      { frame: 11, x: 18, y: -50, w: 58, h: 110 },// Still strong
-      { frame: 12, x: 15, y: -45, w: 55, h: 105 },// Coming down
-      { frame: 13, x: 15, y: -40, w: 55, h: 100 },// Descending
-      { frame: 14, x: 12, y: -35, w: 52, h: 95 }, // Lower
-      { frame: 15, x: 10, y: -30, w: 50, h: 90 }, // Almost down
-      { frame: 16, x: 8, y: -25, w: 48, h: 85 },  // Final hit
-      { frame: 17, x: 5, y: -20, w: 45, h: 80 }   // Last active
+      { frame: 2, x: -10, y: -20, w: 60, h: 80 },  // Start closer, cover more area
+      { frame: 3, x: -5, y: -30, w: 65, h: 90 },   // Going up
+      { frame: 4, x: 0, y: -35, w: 70, h: 95 },    // Higher
+      { frame: 5, x: 0, y: -40, w: 70, h: 100 },   // Peak start
+      { frame: 6, x: 5, y: -50, w: 75, h: 110 },   // Rising more
+      { frame: 7, x: 10, y: -55, w: 80, h: 115 },  // Higher
+      { frame: 8, x: 10, y: -60, w: 80, h: 120 },  // Maximum height
+      { frame: 9, x: 12, y: -58, w: 78, h: 118 },  // Peak power
+      { frame: 10, x: 10, y: -55, w: 80, h: 115 }, // Strong at top
+      { frame: 11, x: 5, y: -50, w: 75, h: 110 },  // Still strong
+      { frame: 12, x: 0, y: -45, w: 70, h: 105 },  // Coming down
+      { frame: 13, x: 0, y: -40, w: 70, h: 100 },  // Descending
+      { frame: 14, x: -5, y: -35, w: 65, h: 95 },  // Lower
+      { frame: 15, x: -10, y: -30, w: 60, h: 90 }, // Almost down
+      { frame: 16, x: -12, y: -25, w: 58, h: 85 }, // Final hit
+      { frame: 17, x: -15, y: -20, w: 55, h: 80 }  // Last active
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 },
     invulnerable: true,
@@ -736,6 +736,27 @@ function handleKeyUp(event) {
   }
 }
 
+function getSpriteOffset(player) {
+  const currentSprite = player.getCurrentSprite();
+  const isAttacking = player.currentAttack != null;
+  
+  if (!isAttacking) {
+    // Idle and movement sprites are centered
+    return -60;
+  } else {
+    // Attack sprites are positioned from the front edge
+    // For P1 (facing right): position from left edge of player
+    // For P2 (facing left): position from right edge of player
+    if (player.facing > 0) {
+      // Facing right: position sprite from front (right side)
+      return -30;  // Show attack extending forward from center-front
+    } else {
+      // Facing left: position sprite from front (left side)  
+      return -90;  // Show attack extending forward from center-front
+    }
+  }
+}
+
 function drawSprite(sprite, x, y, color, facingRight = true) {
   const pattern = fighterSprites[sprite];
   if (!pattern) return;
@@ -1045,8 +1066,12 @@ function drawGame() {
   else if (player2.invulnerable) p2Color = 0xffff00;
   else if (player2.state === 'walk_back' && player2.guardCount < player2.maxGuards) p2Color = 0x8888ff;
   
-  drawSprite(player1.getCurrentSprite(), player1.x - 60, player1.y, p1Color, player1.facing > 0);
-  drawSprite(player2.getCurrentSprite(), player2.x - 60, player2.y, p2Color, player2.facing > 0);
+  // Position sprites differently for attacks vs idle/movement
+  const p1SpriteOffset = getSpriteOffset(player1);
+  const p2SpriteOffset = getSpriteOffset(player2);
+  
+  drawSprite(player1.getCurrentSprite(), player1.x + p1SpriteOffset, player1.y, p1Color, player1.facing > 0);
+  drawSprite(player2.getCurrentSprite(), player2.x + p2SpriteOffset, player2.y, p2Color, player2.facing > 0);
   
   // Draw health bars
   drawHealthBar(100, 30, player1.health, player1.maxHealth, 0x00ff00);
