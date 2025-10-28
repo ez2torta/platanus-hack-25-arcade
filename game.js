@@ -160,52 +160,52 @@ const fighterSprites = {
     [0,1,1,0,0,0,0,1,1,1]
   ],
   p2_attack_low: [
-    [0,0,0,0,0,0,1,1,0,0],  // Head (player position - P2 faces left)
-    [0,0,0,0,0,1,1,1,1,0],  // Face (player body)  
-    [0,0,0,0,0,0,1,1,0,1],  // Eyes (player body)
-    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
-    [0,0,0,0,0,0,1,1,1,0],  // Torso (player body)
-    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
-    [0,0,0,0,0,0,1,1,1,1],  // Normal body position
-    [0,0,0,1,1,1,1,0,1,1],  // LOW ATTACK extending left
-    [0,1,1,1,1,1,1,0,0,1],  // LOW KICK extending forward (left)
-    [1,1,1,1,1,1,0,0,1,1]   // MAXIMUM low attack reach
+    [0,0,1,1,0,0,0,0,0,0],  // Head (player position - will be mirrored)
+    [0,1,1,1,1,0,0,0,0,0],  // Face (player body)  
+    [1,0,1,1,0,0,0,0,0,0],  // Eyes (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [0,1,1,1,0,0,0,0,0,0],  // Torso (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Normal body position
+    [1,1,0,1,1,1,1,0,0,0],  // LOW ATTACK extending right (will be mirrored to left)
+    [1,0,0,1,1,1,1,1,1,0],  // LOW KICK extending forward 
+    [1,1,0,0,1,1,1,1,1,1]   // MAXIMUM low attack reach
   ],
   p2_attack_mid: [
-    [0,0,0,0,0,0,1,1,0,0],  // Head (player position - P2 faces left)
-    [0,0,0,0,0,1,1,1,1,0],  // Face (player body)
-    [0,0,0,0,0,0,1,1,0,1],  // Eyes (player body)
-    [0,0,0,0,0,0,1,1,1,1],  // Body upper (player body)
-    [0,0,1,1,1,1,1,1,1,1],  // MID PUNCH extending left
+    [0,0,1,1,0,0,0,0,0,0],  // Head (player position - will be mirrored)
+    [0,1,1,1,1,0,0,0,0,0],  // Face (player body)
+    [1,0,1,1,0,0,0,0,0,0],  // Eyes (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body upper (player body)
+    [1,1,1,1,1,1,1,1,1,0],  // MID PUNCH extending right (will be mirrored to left)
     [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM mid attack reach
-    [0,0,0,0,0,0,1,1,1,0],  // Back to player body
-    [0,0,0,0,0,0,1,1,0,1],  // Normal body
-    [0,0,0,0,0,0,0,0,0,1],  // Normal stance
-    [0,0,0,0,0,0,1,1,1,1]   // Normal feet (player body)
+    [0,1,1,1,0,0,0,0,0,0],  // Back to player body
+    [1,0,1,1,0,0,0,0,0,0],  // Normal body
+    [1,0,0,0,0,0,0,0,0,0],  // Normal stance
+    [1,1,1,1,0,0,0,0,0,0]   // Normal feet (player body)
   ],
   p2_donkey_kick: [
-    [0,0,0,0,0,0,1,1,0,0],  // Head (player position - P2 faces left)
-    [0,0,0,0,0,1,1,1,1,0],  // Face (player body)
-    [0,0,0,0,0,0,1,1,0,1],  // Eyes (player body)
-    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
-    [0,0,0,0,0,0,1,1,1,0],  // Torso (player body)
-    [0,0,0,0,0,0,1,1,1,1],  // Body (player body)
-    [0,0,0,0,0,0,0,1,0,1],  // Player stance
-    [0,0,0,1,1,1,1,0,1,1],  // KICK extending left
-    [0,1,1,1,1,1,0,0,1,1],  // FULL KICK extension
-    [1,1,1,1,1,0,0,0,1,1]   // MAXIMUM kick reach
+    [0,0,1,1,0,0,0,0,0,0],  // Head (player position - will be mirrored)
+    [0,1,1,1,1,0,0,0,0,0],  // Face (player body)
+    [1,0,1,1,0,0,0,0,0,0],  // Eyes (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [0,1,1,1,0,0,0,0,0,0],  // Torso (player body)
+    [1,1,1,1,0,0,0,0,0,0],  // Body (player body)
+    [1,0,1,0,0,0,0,0,0,0],  // Player stance
+    [1,1,0,1,1,1,1,0,0,0],  // KICK extending right (will be mirrored to left)
+    [1,1,0,0,1,1,1,1,1,0],  // FULL KICK extension
+    [1,1,0,0,0,1,1,1,1,1]   // MAXIMUM kick reach
   ],
   p2_shoryu: [
     [1,1,1,1,1,1,1,1,1,1],  // UPPERCUT full reach at top
     [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut maximum area
-    [1,1,1,0,1,1,0,1,0,1],  // Upper attack zone
+    [1,0,1,0,1,1,0,1,1,1],  // Upper attack zone
     [1,1,1,1,1,1,1,1,1,1],  // Full power uppercut
     [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM rising attack
     [1,1,1,1,1,1,1,1,1,1],  // Full power zone
-    [0,0,0,0,0,1,1,1,1,0],  // Back to player body
-    [0,0,0,0,0,0,1,1,0,1],  // Player body
-    [0,0,0,0,0,0,0,0,0,1],  // Player stance
-    [0,0,0,0,0,0,1,1,1,1]   // Player feet
+    [0,1,1,1,1,0,0,0,0,0],  // Back to player body
+    [1,0,1,1,0,0,0,0,0,0],  // Player body
+    [1,0,0,0,0,0,0,0,0,0],  // Player stance
+    [1,1,1,1,0,0,0,0,0,0]   // Player feet
   ],
   p2_hit: [
     [0,0,0,1,1,1,1,0,0,0],
@@ -230,14 +230,14 @@ const attacks = {
     recovery: 12,
     damage: 12,
     hitboxes: [
-      { frame: 5, x: -10, y: 60, w: 50, h: 30 },   // Start closer, extend further
-      { frame: 6, x: -5, y: 58, w: 55, h: 32 },    // Active frame 1
-      { frame: 7, x: 0, y: 55, w: 60, h: 35 },     // Active frame 2 (bigger)
-      { frame: 8, x: 5, y: 58, w: 58, h: 32 },     // Active frame 3
-      { frame: 9, x: 0, y: 60, w: 55, h: 30 },     // Active frame 4
-      { frame: 10, x: -5, y: 62, w: 50, h: 28 },   // Active frame 5
-      { frame: 11, x: -8, y: 64, w: 45, h: 25 },   // Final active
-      { frame: 12, x: -10, y: 65, w: 40, h: 20 }   // Last hit
+      { frame: 5, x: -15, y: 70, w: 70, h: 35 },   // Start closer, wider, lower
+      { frame: 6, x: -10, y: 68, w: 75, h: 37 },   // Active frame 1
+      { frame: 7, x: -5, y: 65, w: 80, h: 40 },    // Active frame 2 (biggest)
+      { frame: 8, x: 0, y: 68, w: 78, h: 37 },     // Active frame 3
+      { frame: 9, x: -5, y: 70, w: 75, h: 35 },    // Active frame 4
+      { frame: 10, x: -10, y: 72, w: 70, h: 33 },  // Active frame 5
+      { frame: 11, x: -12, y: 74, w: 65, h: 30 },  // Final active
+      { frame: 12, x: -15, y: 75, w: 60, h: 28 }   // Last hit
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 }
   },
@@ -483,6 +483,9 @@ class Fighter {
     this.attackFrame = 0;
     this.state = attackType;
     
+    // Reset hit tracking when starting a new attack
+    this.resetOpponentHitTracking();
+    
     const attack = attacks[attackType];
     
     // Set invulnerability for shoryu
@@ -565,9 +568,9 @@ class Fighter {
   getHurtbox() {
     if (!this.currentAttack) {
       return {
-        x: this.x - 30,  // Slimmer hurtbox to match slimmer sprites
+        x: this.x - 40,  // Wider hurtbox, better centered
         y: this.y,
-        w: 60,  // Reduced from 100 to 60 for slimmer profile
+        w: 80,  // Increased back to 80 for better coverage
         h: 100
       };
     }
