@@ -221,7 +221,7 @@ const fighterSprites = {
   ]
 };
 
-// Attack definitions with detailed frame data and specific hitboxes
+// Attack definitions with detailed FRAME-BY-FRAME hitbox system
 const attacks = {
   attack_low: {
     frames: 25,
@@ -230,9 +230,14 @@ const attacks = {
     recovery: 12,
     damage: 12,
     hitboxes: [
-      { frame: 5, x: 0, y: 60, w: 40, h: 30 },
-      { frame: 8, x: 5, y: 55, w: 45, h: 35 },
-      { frame: 12, x: 0, y: 60, w: 35, h: 25 }
+      { frame: 5, x: 0, y: 60, w: 40, h: 30 },   // Startup hit
+      { frame: 6, x: 5, y: 58, w: 42, h: 32 },   // Active frame 1
+      { frame: 7, x: 8, y: 55, w: 45, h: 35 },   // Active frame 2 (bigger)
+      { frame: 8, x: 10, y: 58, w: 43, h: 32 },  // Active frame 3
+      { frame: 9, x: 8, y: 60, w: 40, h: 30 },   // Active frame 4
+      { frame: 10, x: 5, y: 62, w: 38, h: 28 },  // Active frame 5 (smaller)
+      { frame: 11, x: 2, y: 64, w: 35, h: 25 },  // Final active
+      { frame: 12, x: 0, y: 65, w: 30, h: 20 }   // Last hit
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 }
   },
@@ -243,9 +248,15 @@ const attacks = {
     recovery: 12,
     damage: 18,
     hitboxes: [
-      { frame: 8, x: 0, y: 30, w: 50, h: 40 },
-      { frame: 12, x: 10, y: 25, w: 55, h: 45 },
-      { frame: 16, x: 5, y: 30, w: 45, h: 35 }
+      { frame: 8, x: 0, y: 30, w: 50, h: 40 },   // First hit
+      { frame: 9, x: 5, y: 28, w: 52, h: 42 },   // Expanding
+      { frame: 10, x: 8, y: 25, w: 55, h: 45 },  // Peak size
+      { frame: 11, x: 10, y: 27, w: 53, h: 43 }, // Maintaining
+      { frame: 12, x: 12, y: 25, w: 55, h: 45 }, // Strong frame
+      { frame: 13, x: 10, y: 28, w: 50, h: 40 }, // Reducing
+      { frame: 14, x: 8, y: 30, w: 48, h: 38 },  // Smaller
+      { frame: 15, x: 5, y: 32, w: 45, h: 35 },  // Final
+      { frame: 16, x: 2, y: 35, w: 40, h: 30 }   // Last hit
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 }
   },
@@ -256,9 +267,17 @@ const attacks = {
     recovery: 18,
     damage: 25,
     hitboxes: [
-      { frame: 15, x: 20, y: 40, w: 60, h: 40 },
-      { frame: 20, x: 30, y: 35, w: 70, h: 45 },
-      { frame: 25, x: 25, y: 40, w: 65, h: 40 }
+      { frame: 15, x: 20, y: 40, w: 60, h: 40 }, // Initial kick
+      { frame: 16, x: 25, y: 38, w: 65, h: 42 }, // Extending
+      { frame: 17, x: 28, y: 35, w: 68, h: 45 }, // Max reach
+      { frame: 18, x: 30, y: 33, w: 70, h: 47 }, // Peak power
+      { frame: 19, x: 32, y: 35, w: 68, h: 45 }, // Strong
+      { frame: 20, x: 30, y: 38, w: 65, h: 42 }, // Maintaining
+      { frame: 21, x: 28, y: 40, w: 62, h: 40 }, // Reducing
+      { frame: 22, x: 25, y: 42, w: 58, h: 38 }, // Weaker
+      { frame: 23, x: 22, y: 44, w: 55, h: 35 }, // Final
+      { frame: 24, x: 20, y: 45, w: 50, h: 32 }, // Last hit
+      { frame: 25, x: 18, y: 47, w: 45, h: 30 }  // Very last
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 },
     movement: { x: 3, y: 0 }
@@ -270,11 +289,22 @@ const attacks = {
     recovery: 41,
     damage: 35,
     hitboxes: [
-      { frame: 2, x: 10, y: -20, w: 50, h: 80 },
-      { frame: 5, x: 15, y: -40, w: 55, h: 100 },
-      { frame: 8, x: 20, y: -60, w: 60, h: 120 },
-      { frame: 12, x: 15, y: -40, w: 55, h: 100 },
-      { frame: 16, x: 10, y: -20, w: 50, h: 80 }
+      { frame: 2, x: 10, y: -20, w: 50, h: 80 },  // Rising start
+      { frame: 3, x: 12, y: -30, w: 52, h: 90 },  // Going up
+      { frame: 4, x: 15, y: -35, w: 55, h: 95 },  // Higher
+      { frame: 5, x: 15, y: -40, w: 55, h: 100 }, // Peak start
+      { frame: 6, x: 18, y: -50, w: 58, h: 110 }, // Rising more
+      { frame: 7, x: 20, y: -55, w: 60, h: 115 }, // Higher
+      { frame: 8, x: 20, y: -60, w: 60, h: 120 }, // Maximum height
+      { frame: 9, x: 22, y: -58, w: 58, h: 118 }, // Peak power
+      { frame: 10, x: 20, y: -55, w: 60, h: 115 },// Strong at top
+      { frame: 11, x: 18, y: -50, w: 58, h: 110 },// Still strong
+      { frame: 12, x: 15, y: -45, w: 55, h: 105 },// Coming down
+      { frame: 13, x: 15, y: -40, w: 55, h: 100 },// Descending
+      { frame: 14, x: 12, y: -35, w: 52, h: 95 }, // Lower
+      { frame: 15, x: 10, y: -30, w: 50, h: 90 }, // Almost down
+      { frame: 16, x: 8, y: -25, w: 48, h: 85 },  // Final hit
+      { frame: 17, x: 5, y: -20, w: 45, h: 80 }   // Last active
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 },
     invulnerable: true,
@@ -364,18 +394,20 @@ class Fighter {
       }
     }
     
-    // Handle movement based on input state
+    // Handle movement based on input state (FIXED: Always use absolute directions)
     if (this.canAct() && !this.currentAttack) {
       if (this.backPressed) {
         this.state = 'walk_back';
-        this.velX = -this.walkSpeed * this.facing;
+        // Fixed: Use absolute directions - left is always negative, right is always positive
+        this.velX = this.isPlayer1 ? -this.walkSpeed : this.walkSpeed;
         // Walking back activates guard
         if (this.guardCount < this.maxGuards) {
           this.blockStun = 1; // Minimal block stun to indicate blocking
         }
       } else if (this.forwardPressed) {
         this.state = 'walk_forward';
-        this.velX = this.walkSpeed * this.facing;
+        // Fixed: Use absolute directions
+        this.velX = this.isPlayer1 ? this.walkSpeed : -this.walkSpeed;
       } else {
         this.state = 'idle';
       }
@@ -497,7 +529,7 @@ class Fighter {
     const attack = attacks[this.currentAttack];
     const activeHitboxes = [];
     
-    // Check each hitbox for current frame
+    // Check each hitbox for current frame - FRAME-BY-FRAME SYSTEM
     for (const hitboxData of attack.hitboxes) {
       if (this.attackFrame === hitboxData.frame) {
         const hitbox = {
@@ -505,7 +537,8 @@ class Fighter {
           y: this.y + hitboxData.y,
           w: hitboxData.w,
           h: hitboxData.h,
-          damage: attack.damage
+          damage: attack.damage,
+          frame: hitboxData.frame // Include frame info for debug
         };
         activeHitboxes.push(hitbox);
       }
@@ -594,7 +627,7 @@ function create() {
     align: 'center'
   }).setOrigin(0.5);
   
-  this.add.text(400, 120, 'Hold Attack 1sec+ for specials | Back+Walk = Guard | F1-Debug | R-Restart', {
+  this.add.text(400, 120, 'Hold Attack 1sec+ for specials | Walk Away = Guard | F1-Hitboxes | R-Restart', {
     fontSize: '12px',
     fontFamily: 'Arial, sans-serif',
     color: '#666666',
@@ -625,28 +658,28 @@ function handleKeyDown(event) {
     return;
   }
   
-  // Player 1 controls (ASD)
+  // Player 1 controls (ASD) - A=left, D=right (absolute directions)
   if (event.key === 'a' || event.key === 'A') {
-    player1.backPressed = true;
+    player1.backPressed = true;  // A = move left (back for P1)
   } else if (event.key === 's' || event.key === 'S') {
     if (!player1.attackButtonPressed) {
       player1.attackButtonPressed = true;
       player1.attackButtonHoldTime = 0;
     }
   } else if (event.key === 'd' || event.key === 'D') {
-    player1.forwardPressed = true;
+    player1.forwardPressed = true;  // D = move right (forward for P1)
   }
   
-  // Player 2 controls (Arrow keys)
+  // Player 2 controls (Arrow keys) - ←=left, →=right (absolute directions)
   if (event.key === 'ArrowLeft') {
-    player2.backPressed = true;
+    player2.forwardPressed = true;  // ← = move left (forward for P2 since they face left)
   } else if (event.key === 'ArrowDown') {
     if (!player2.attackButtonPressed) {
       player2.attackButtonPressed = true;
       player2.attackButtonHoldTime = 0;
     }
   } else if (event.key === 'ArrowRight') {
-    player2.forwardPressed = true;
+    player2.backPressed = true;  // → = move right (back for P2 since they face left)
   }
 }
 
@@ -663,16 +696,16 @@ function handleKeyUp(event) {
     player1.forwardPressed = false;
   }
   
-  // Player 2 controls
+  // Player 2 controls (fixed mapping)
   if (event.key === 'ArrowLeft') {
-    player2.backPressed = false;
+    player2.forwardPressed = false;  // ← = move left
   } else if (event.key === 'ArrowDown') {
     if (player2.attackButtonPressed) {
       player2.attackButtonPressed = false;
       player2.attackButtonJustReleased = true;
     }
   } else if (event.key === 'ArrowRight') {
-    player2.forwardPressed = false;
+    player2.backPressed = false;  // → = move right
   }
 }
 
@@ -706,12 +739,15 @@ function update(_time, delta) {
   player1.update(delta);
   player2.update(delta);
   
+  // Check player collision and prevent overlap
+  checkPlayerCollision();
+  
   // Reset input flags
   player1.resetInputs();
   player2.resetInputs();
   
-  // Check collisions
-  checkCollisions();
+  // Check combat collisions
+  checkCombatCollisions();
   
   // Update facing directions (only when not attacking)
   if (!player1.currentAttack && !player2.currentAttack) {
@@ -736,7 +772,41 @@ function update(_time, delta) {
   drawGame();
 }
 
-function checkCollisions() {
+function checkPlayerCollision() {
+  // Prevent players from overlapping
+  const p1Bounds = { x: player1.x - 50, y: player1.y, w: 100, h: 100 };
+  const p2Bounds = { x: player2.x - 50, y: player2.y, w: 100, h: 100 };
+  
+  if (boxCollision(p1Bounds, p2Bounds)) {
+    // Calculate overlap and push players apart
+    const centerDistance = Math.abs(player1.x - player2.x);
+    const minDistance = 100; // Minimum distance between players
+    
+    if (centerDistance < minDistance) {
+      const pushDistance = (minDistance - centerDistance) / 2;
+      
+      if (player1.x < player2.x) {
+        // Player 1 is on the left
+        player1.x -= pushDistance;
+        player2.x += pushDistance;
+      } else {
+        // Player 1 is on the right
+        player1.x += pushDistance;
+        player2.x -= pushDistance;
+      }
+      
+      // Ensure players stay within screen bounds
+      player1.x = Math.max(50, Math.min(player1.x, 750));
+      player2.x = Math.max(50, Math.min(player2.x, 750));
+      
+      // Stop horizontal movement to prevent pushing through
+      player1.velX = 0;
+      player2.velX = 0;
+    }
+  }
+}
+
+function checkCombatCollisions() {
   const p1Hitboxes = player1.getHitboxes();
   const p2Hitboxes = player2.getHitboxes();
   const p1Hurtbox = player1.getHurtbox();
@@ -977,52 +1047,122 @@ function drawRoundIndicators() {
 }
 
 function drawDebugInfo() {
-  // Draw hitboxes
+  // Clear any previous debug text
+  graphics.scene.children.list.forEach(child => {
+    if (child.debugText) {
+      child.destroy();
+    }
+  });
+  
+  // Draw hitboxes (RED) - Frame-specific attack boxes
   const p1Hitboxes = player1.getHitboxes();
   const p2Hitboxes = player2.getHitboxes();
   
-  graphics.lineStyle(2, 0xff0000);
-  p1Hitboxes.forEach(hitbox => {
+  graphics.lineStyle(3, 0xff0000);
+  p1Hitboxes.forEach((hitbox, index) => {
     graphics.strokeRect(hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+    // Label each hitbox
+    const text = graphics.scene.add.text(hitbox.x, hitbox.y - 15, `HIT:${hitbox.damage}`, {
+      fontSize: '10px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#ff0000'
+    });
+    text.debugText = true;
   });
   
-  p2Hitboxes.forEach(hitbox => {
+  p2Hitboxes.forEach((hitbox, index) => {
     graphics.strokeRect(hitbox.x, hitbox.y, hitbox.w, hitbox.h);
+    const text = graphics.scene.add.text(hitbox.x, hitbox.y - 15, `HIT:${hitbox.damage}`, {
+      fontSize: '10px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#ff0000'
+    });
+    text.debugText = true;
   });
   
-  // Draw hurtboxes
+  // Draw hurtboxes (CYAN/YELLOW) - Vulnerable areas
   const p1Hurtbox = player1.getHurtbox();
   const p2Hurtbox = player2.getHurtbox();
   
   const hurtboxColor1 = player1.invulnerable ? 0xffff00 : 0x00ffff;
   const hurtboxColor2 = player2.invulnerable ? 0xffff00 : 0x00ffff;
   
-  graphics.lineStyle(1, hurtboxColor1);
+  graphics.lineStyle(2, hurtboxColor1);
   graphics.strokeRect(p1Hurtbox.x, p1Hurtbox.y, p1Hurtbox.w, p1Hurtbox.h);
   
-  graphics.lineStyle(1, hurtboxColor2);
+  graphics.lineStyle(2, hurtboxColor2);
   graphics.strokeRect(p2Hurtbox.x, p2Hurtbox.y, p2Hurtbox.w, p2Hurtbox.h);
+  
+  // Draw player collision boxes (GREEN) - Anti-overlap
+  graphics.lineStyle(1, 0x00ff00);
+  graphics.strokeRect(player1.x - 50, player1.y, 100, 100);
+  graphics.strokeRect(player2.x - 50, player2.y, 100, 100);
   
   // Draw center points
   graphics.fillStyle(0xffff00, 1);
-  graphics.fillCircle(player1.x, player1.y + 50, 3);
-  graphics.fillCircle(player2.x, player2.y + 50, 3);
+  graphics.fillCircle(player1.x, player1.y + 50, 4);
+  graphics.fillCircle(player2.x, player2.y + 50, 4);
   
-  // Draw debug text
-  const debugText1 = `P1: ${player1.currentAttack || player1.state} F:${player1.attackFrame} H:${player1.attackButtonHoldTime}`;
-  const debugText2 = `P2: ${player2.currentAttack || player2.state} F:${player2.attackFrame} H:${player2.attackButtonHoldTime}`;
-  
-  graphics.scene.add.text(10, 150, debugText1, {
-    fontSize: '12px',
+  // Debug info header
+  const header = graphics.scene.add.text(10, 140, 'DEBUG MODE - Frame-by-Frame System', {
+    fontSize: '14px',
     fontFamily: 'Arial, sans-serif',
-    color: '#ffffff'
-  }).setDepth(1000);
+    color: '#ffff00',
+    backgroundColor: '#000000'
+  });
+  header.debugText = true;
   
-  graphics.scene.add.text(10, 170, debugText2, {
-    fontSize: '12px',
+  // Color legend
+  const legend = graphics.scene.add.text(10, 160, 'RED=Hitboxes CYAN=Hurtboxes YELLOW=Invulnerable GREEN=Collision', {
+    fontSize: '10px',
     fontFamily: 'Arial, sans-serif',
-    color: '#ffffff'
-  }).setDepth(1000);
+    color: '#ffffff',
+    backgroundColor: '#000000'
+  });
+  legend.debugText = true;
+  
+  // Frame data for each player
+  const p1Data = `P1: ${player1.currentAttack || player1.state} | Frame:${player1.attackFrame} | Hold:${player1.attackButtonHoldTime} | Guards:${player1.guardCount}/3`;
+  const p2Data = `P2: ${player2.currentAttack || player2.state} | Frame:${player2.attackFrame} | Hold:${player2.attackButtonHoldTime} | Guards:${player2.guardCount}/3`;
+  
+  const p1Text = graphics.scene.add.text(10, 180, p1Data, {
+    fontSize: '11px',
+    fontFamily: 'Arial, sans-serif',
+    color: '#00ff00',
+    backgroundColor: '#000000'
+  });
+  p1Text.debugText = true;
+  
+  const p2Text = graphics.scene.add.text(10, 200, p2Data, {
+    fontSize: '11px',
+    fontFamily: 'Arial, sans-serif',
+    color: '#0088ff',
+    backgroundColor: '#000000'
+  });
+  p2Text.debugText = true;
+  
+  // Active hitbox info
+  if (p1Hitboxes.length > 0) {
+    const hitboxInfo = `P1 Active Hitboxes: ${p1Hitboxes.length} (Damage: ${p1Hitboxes[0].damage})`;
+    const hitboxText = graphics.scene.add.text(10, 220, hitboxInfo, {
+      fontSize: '11px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#ff0000',
+      backgroundColor: '#000000'
+    });
+    hitboxText.debugText = true;
+  }
+  
+  if (p2Hitboxes.length > 0) {
+    const hitboxInfo = `P2 Active Hitboxes: ${p2Hitboxes.length} (Damage: ${p2Hitboxes[0].damage})`;
+    const hitboxText = graphics.scene.add.text(10, 240, hitboxInfo, {
+      fontSize: '11px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#ff0000',
+      backgroundColor: '#000000'
+    });
+    hitboxText.debugText = true;
+  }
 }
 
 
