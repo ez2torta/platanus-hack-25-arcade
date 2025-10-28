@@ -22,92 +22,92 @@ let gameState = 'playing';
 let debugMode = false;
 let uiText = {};
 
-// Fighter sprite patterns (10x10 for better expressivity)
+// Fighter sprite patterns (10x10, optimized for better readability)
 const fighterSprites = {
-  // Player 1 states
+  // Player 1 states - SLIMMER for better action recognition
   p1_idle: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,0,1,0,0],
+    [0,1,1,0,0,0,0,1,1,0]
   ],
   p1_walk_forward: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,1,1,0,0],
-    [1,1,1,0,0,1,1,1,0,0]
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,1,0,0,0],  // Forward lean
+    [0,1,0,0,0,1,1,1,0,0]
   ],
   p1_walk_back: [
+    [0,0,0,0,1,1,0,0,0,0],
     [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,0,1,1,0,0,0,1,1,0],
-    [0,0,1,1,1,0,0,1,1,1]
+    [0,1,0,1,1,1,1,0,0,0],  // Defensive posture
+    [0,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,1,1,0,0,0,0,1,0,0],  // Back lean
+    [1,1,0,0,0,0,0,1,1,0]
   ],
   p1_attack_low: [
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [1,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [0,0,0,0,1,1,0,0,0,0],  // Head normal
+    [0,0,0,1,1,1,1,0,0,0],  // Face normal
+    [0,0,1,0,1,1,0,1,0,0],  // Eyes normal
+    [0,0,1,1,1,1,1,1,0,0],  // Body normal
+    [0,0,0,1,1,1,1,0,0,0],  // Torso normal
+    [0,0,1,1,1,1,1,1,0,0],  // Body stretching
+    [1,1,1,1,1,1,1,1,1,1],  // WIDE lower body - attack zone
+    [1,1,1,0,1,1,0,1,1,1],  // EXPANDED legs attacking
+    [1,1,1,0,0,0,0,1,1,1],  // WIDE stance for low attack
+    [1,1,1,1,0,0,1,1,1,1]   // MAXIMUM width at bottom
   ],
   p1_attack_mid: [
-    [0,0,0,1,1,1,1,0,0,0],
-    [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [0,0,0,0,1,1,0,0,0,0],  // Head normal
+    [0,0,0,1,1,1,1,0,0,0],  // Face normal
+    [0,0,1,0,1,1,0,1,0,0],  // Eyes normal
+    [1,1,1,1,1,1,1,1,1,1],  // WIDE arms extending
+    [1,1,1,1,1,1,1,1,1,1],  // MAXIMUM width at mid level
+    [1,1,1,1,1,1,1,1,1,1],  // Body stretched for mid attack
+    [0,0,1,1,1,1,1,1,0,0],  // Body contracting back
+    [0,0,1,0,1,1,0,1,0,0],  // Normal lower
+    [0,0,1,0,0,0,0,1,0,0],  // Normal stance
+    [0,1,1,0,0,0,0,1,1,0]   // Normal feet
   ],
   p1_donkey_kick: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,0,0,0],
-    [0,1,1,0,1,1,1,0,0,0],
-    [0,1,1,0,1,1,1,1,0,0],
-    [1,1,1,0,0,1,1,1,1,0]
+    [0,0,1,0,1,1,0,0,0,0],
+    [0,1,1,0,1,1,1,0,0,0],  // Kick stretching forward
+    [1,1,1,0,1,1,1,1,0,0],  // Full kick extension
+    [1,1,1,0,0,1,1,1,1,0]   // Ground kick impact
   ],
   p1_shoryu: [
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [1,1,1,1,1,1,1,1,1,1],  // Full upper reach
+    [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut area
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,0],  // Expanded rising attack
+    [1,1,1,1,1,1,1,1,1,1],  // Full power zone
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0]
   ],
   p1_hit: [
     [0,0,0,1,1,1,1,0,0,0],
@@ -122,90 +122,90 @@ const fighterSprites = {
     [1,1,1,0,0,0,0,1,1,1]
   ],
 
-  // Player 2 states (different style)
+  // Player 2 states - SLIMMER (different eye pattern for distinction)
   p2_idle: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],  // Different eyes (wider apart)
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,0,1,0,0],
+    [0,1,1,0,0,0,0,1,1,0]
   ],
   p2_walk_forward: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,0,1,1,0,0,0,1,1,0],
-    [0,0,1,1,1,0,0,1,1,1]
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,0,1,0,0,0,1,0,0],  // Forward lean (P2 going left)
+    [0,0,1,1,1,0,0,1,1,0]
   ],
   p2_walk_back: [
+    [0,0,0,0,1,1,0,0,0,0],
     [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,1,1,0,0],
-    [1,1,1,0,0,1,1,1,0,0]
+    [0,0,0,1,1,1,1,0,1,0],  // Defensive posture
+    [0,0,1,1,1,1,1,1,1,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,0,1,1,0],  // Back lean (P2 going right)
+    [0,1,1,0,0,0,0,1,1,1]
   ],
   p2_attack_low: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,1,1,1,0,0,1,1,1,0],  // Expanded low attack area
+    [1,1,1,1,1,1,1,1,1,1]   // Full bottom row for low attack
   ],
   p2_attack_mid: [
+    [0,0,0,0,1,1,0,0,0,0],
     [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [0,1,1,1,1,1,1,1,1,0],  // Expanded mid attack area
+    [1,1,1,1,1,1,1,1,1,1],  // Full mid row for mid attack
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0]
   ],
   p2_donkey_kick: [
+    [0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,1,0,0,1,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [1,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,0],
-    [0,0,1,1,1,1,1,1,1,0],
-    [0,0,0,0,1,1,0,1,1,0],
-    [0,0,0,1,1,1,0,1,1,0],
-    [0,0,1,1,1,1,0,1,1,0],
-    [0,1,1,1,1,0,0,1,1,1]
+    [0,0,0,0,1,1,0,1,0,0],
+    [0,0,0,1,1,1,0,1,1,0],  // Kick stretching backwards
+    [0,1,1,1,1,1,0,1,1,1],  // Full kick extension
+    [1,1,1,1,1,0,0,1,1,1]   // Ground kick impact
   ],
   p2_shoryu: [
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,1,1,1,1,1,1,0],
-    [1,1,1,1,1,1,1,1,1,1],
-    [1,1,1,1,1,1,1,1,1,1],
-    [0,1,1,1,1,1,1,1,1,0],
-    [0,1,1,0,1,1,0,1,1,0],
-    [0,1,1,0,0,0,0,1,1,0],
-    [1,1,1,0,0,0,0,1,1,1]
+    [1,1,1,1,1,1,1,1,1,1],  // Full upper reach
+    [1,1,1,1,1,1,1,1,1,1],  // Rising uppercut area
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0],
+    [0,1,1,1,1,1,1,1,1,0],  // Expanded rising attack
+    [1,1,1,1,1,1,1,1,1,1],  // Full power zone
+    [0,0,0,1,1,1,1,0,0,0],
+    [0,0,1,0,1,1,0,1,0,0],
+    [0,0,1,0,0,0,0,1,0,0],
+    [0,0,1,1,1,1,1,1,0,0]
   ],
   p2_hit: [
     [0,0,0,1,1,1,1,0,0,0],
@@ -343,6 +343,10 @@ class Fighter {
     this.invulnerable = false;
     this.invulnerableTimer = 0;
     
+    // Hit tracking - prevent multiple hits from same attack
+    this.lastHitByAttack = null;
+    this.lastHitFrame = -1;
+    
     // Movement
     this.velX = 0;
     this.velY = 0;
@@ -391,6 +395,8 @@ class Fighter {
         this.currentAttack = null;
         this.attackFrame = 0;
         this.state = 'idle';
+        // Reset hit tracking for opponents when attack ends
+        this.resetOpponentHitTracking();
       }
     }
     
@@ -494,8 +500,13 @@ class Fighter {
     return true;
   }
   
-  takeDamage(damage, knockback = 0) {
+  takeDamage(damage, knockback = 0, attackerAttack = null, attackerFrame = 0) {
     if (this.invulnerable) return false;
+    
+    // Prevent multiple hits from the same attack
+    if (attackerAttack && this.lastHitByAttack === attackerAttack && this.lastHitFrame >= 0) {
+      return false; // Already hit by this attack
+    }
     
     const isBlocking = (this.state === 'walk_back' || this.blockStun > 1) && this.guardCount < this.maxGuards;
     
@@ -505,6 +516,8 @@ class Fighter {
       this.guardCount++;
       this.blockStun = 20;
       this.velX = knockback * this.facing * 0.3;
+      this.lastHitByAttack = attackerAttack;
+      this.lastHitFrame = attackerFrame;
       playTone(this.scene, 250, 0.1);
       return false;
     } else {
@@ -515,6 +528,8 @@ class Fighter {
       this.velX = knockback * this.facing;
       this.currentAttack = null;
       this.attackFrame = 0;
+      this.lastHitByAttack = attackerAttack;
+      this.lastHitFrame = attackerFrame;
       return true;
     }
   }
@@ -550,9 +565,9 @@ class Fighter {
   getHurtbox() {
     if (!this.currentAttack) {
       return {
-        x: this.x - 50,
+        x: this.x - 30,  // Slimmer hurtbox to match slimmer sprites
         y: this.y,
-        w: 100,
+        w: 60,  // Reduced from 100 to 60 for slimmer profile
         h: 100
       };
     }
@@ -565,6 +580,18 @@ class Fighter {
       w: hurtbox.w,
       h: hurtbox.h
     };
+  }
+  
+  resetOpponentHitTracking() {
+    // Reset hit tracking for both players when this player's attack ends
+    if (player1 && player1.lastHitByAttack === this.currentAttack) {
+      player1.lastHitByAttack = null;
+      player1.lastHitFrame = -1;
+    }
+    if (player2 && player2.lastHitByAttack === this.currentAttack) {
+      player2.lastHitByAttack = null;
+      player2.lastHitFrame = -1;
+    }
   }
   
   getCurrentSprite() {
@@ -729,7 +756,7 @@ function drawSprite(sprite, x, y, color, facingRight = true) {
 }
 
 function update(_time, delta) {
-  if (gameState === 'gameover') return;
+  if (gameState === 'gameover' || gameState === 'roundEnd') return;
   
   // Process attack inputs
   player1.processAttackInput();
@@ -760,8 +787,8 @@ function update(_time, delta) {
     }
   }
   
-  // Check for round end
-  if (player1.health <= 0 || player2.health <= 0) {
+  // Check for round end (but only if game is still playing)
+  if (gameState === 'playing' && (player1.health <= 0 || player2.health <= 0)) {
     endRound();
   }
   
@@ -815,7 +842,7 @@ function checkCombatCollisions() {
   // Player 1 hitting Player 2
   for (const hitbox of p1Hitboxes) {
     if (boxCollision(hitbox, p2Hurtbox)) {
-      const hit = player2.takeDamage(hitbox.damage, 10);
+      const hit = player2.takeDamage(hitbox.damage, 10, player1.currentAttack, player1.attackFrame);
       if (hit) {
         playTone(player1.scene, 400, 0.15);
         // Add small screen shake effect
@@ -830,7 +857,7 @@ function checkCombatCollisions() {
   // Player 2 hitting Player 1
   for (const hitbox of p2Hitboxes) {
     if (boxCollision(hitbox, p1Hurtbox)) {
-      const hit = player1.takeDamage(hitbox.damage, 10);
+      const hit = player1.takeDamage(hitbox.damage, 10, player2.currentAttack, player2.attackFrame);
       if (hit) {
         playTone(player2.scene, 400, 0.15);
         graphics.scene.cameras.main.shake(100, 0.01);
@@ -881,25 +908,47 @@ function endRound() {
       }).setOrigin(0.5);
     }, 100);
   } else {
-    // Next round - reset guard counts
-    setTimeout(() => {
-      player1.health = player1.maxHealth;
-      player2.health = player2.maxHealth;
-      player1.x = 200;
-      player2.x = 600;
-      player1.y = 400;
-      player2.y = 400;
-      player1.state = 'idle';
-      player2.state = 'idle';
-      player1.currentAttack = null;
-      player2.currentAttack = null;
-      player1.guardCount = 0; // Reset guard count each round
-      player2.guardCount = 0;
-      player1.hitStun = 0;
-      player2.hitStun = 0;
-      player1.blockStun = 0;
-      player2.blockStun = 0;
-    }, 2000);
+    // Show round winner first, then reset for next round
+    gameState = 'roundEnd';
+    const roundWinner = player1.health <= 0 ? 'Player 2' : 'Player 1';
+    
+    setTimeout(() => {    
+      const overlay = graphics.scene.add.graphics();
+      overlay.fillStyle(0x000000, 0.6);
+      overlay.fillRect(0, 0, 800, 600);
+      
+      const roundText = graphics.scene.add.text(400, 300, `${roundWinner} Wins Round!`, {
+        fontSize: '32px',
+        fontFamily: 'Arial, sans-serif', 
+        color: roundWinner === 'Player 1' ? '#00ff00' : '#ff0000',
+        align: 'center'
+      }).setOrigin(0.5);
+      
+      // Clear round display and start next round after delay
+      setTimeout(() => {
+        overlay.destroy();
+        roundText.destroy();
+        
+        // Reset for next round
+        player1.health = player1.maxHealth;
+        player2.health = player2.maxHealth;
+        player1.x = 200;
+        player2.x = 600;
+        player1.y = 400;
+        player2.y = 400;
+        player1.state = 'idle';
+        player2.state = 'idle';
+        player1.currentAttack = null;
+        player2.currentAttack = null;
+        player1.guardCount = 0; // Reset guard count each round
+        player2.guardCount = 0;
+        player1.hitStun = 0;
+        player2.hitStun = 0;
+        player1.blockStun = 0;
+        player2.blockStun = 0;
+        gameState = 'playing'; // Resume game
+      }, 2000);
+    }, 100);
   }
 }
 
