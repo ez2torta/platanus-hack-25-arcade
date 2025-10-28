@@ -21,6 +21,8 @@ let player1, player2;
 let gameState = 'playing';
 let debugMode = false;
 let uiText = {};
+let roundTimer = 60; // 60 seconds per round
+let roundStartTime = 0;
 
 // Fighter sprite patterns (10x10, optimized for better readability)
 const fighterSprites = {
@@ -54,12 +56,12 @@ const fighterSprites = {
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,0,1,1,0,1,0,0],
     [0,0,1,1,1,1,1,1,0,0],
-    [0,1,0,1,1,1,1,0,0,0],  // Defensive posture
-    [0,1,1,1,1,1,1,1,0,0],
+    [0,0,0,1,1,1,1,0,1,0],  // Right hand guard (blocking from right)
+    [0,0,1,1,1,1,1,1,1,0],
     [0,0,0,1,1,1,1,0,0,0],
     [0,0,1,0,1,1,0,1,0,0],
-    [0,1,1,0,0,0,0,1,0,0],  // Back lean
-    [1,1,0,0,0,0,0,1,1,0]
+    [0,0,1,0,0,0,0,1,1,0],  // Back lean with right guard
+    [0,1,1,0,0,0,0,1,1,1]
   ],
   p1_attack_low: [
     [0,0,1,1,0,0,0,0,0,0],  // Head (player position)
@@ -239,7 +241,15 @@ const attacks = {
       { frame: 11, x: -12, y: 74, w: 65, h: 30 },  // Final active
       { frame: 12, x: -15, y: 75, w: 60, h: 28 }   // Last hit
     ],
-    hurtbox: { x: -40, y: 0, w: 80, h: 100 }
+    hurtboxes: [
+      { frame: 1, x: -50, y: 0, w: 80, h: 100 },   // Startup - normal hurtbox
+      { frame: 5, x: -45, y: 0, w: 90, h: 100 },   // Attack start - extended
+      { frame: 6, x: -40, y: 0, w: 95, h: 100 },   // Mid attack - very exposed
+      { frame: 7, x: -35, y: 0, w: 100, h: 100 },  // Peak exposure
+      { frame: 8, x: -40, y: 0, w: 95, h: 100 },   // Still exposed
+      { frame: 9, x: -45, y: 0, w: 90, h: 100 },   // Pulling back
+      { frame: 13, x: -50, y: 0, w: 80, h: 100 }   // Recovery - normal
+    ]
   },
   attack_mid: {
     frames: 30,
@@ -261,10 +271,10 @@ const attacks = {
     hurtbox: { x: -40, y: 0, w: 80, h: 100 }
   },
   donkey_kick: {
-    frames: 45,
+    frames: 50,
     startup: 15,
-    active: 12,
-    recovery: 18,
+    active: 18,  // Increased active frames
+    recovery: 17,
     damage: 25,
     hitboxes: [
       { frame: 15, x: -5, y: 40, w: 70, h: 40 }, // Start closer, extend further
@@ -273,20 +283,27 @@ const attacks = {
       { frame: 18, x: 10, y: 33, w: 82, h: 47 }, // Peak power
       { frame: 19, x: 12, y: 35, w: 80, h: 45 }, // Strong
       { frame: 20, x: 10, y: 38, w: 75, h: 42 }, // Maintaining
-      { frame: 21, x: 5, y: 40, w: 70, h: 40 },  // Reducing
-      { frame: 22, x: 0, y: 42, w: 65, h: 38 },  // Weaker
-      { frame: 23, x: -5, y: 44, w: 60, h: 35 }, // Final
-      { frame: 24, x: -8, y: 45, w: 55, h: 32 }, // Last hit
-      { frame: 25, x: -10, y: 47, w: 50, h: 30 } // Very last
+      { frame: 21, x: 12, y: 35, w: 80, h: 45 }, // Strong again
+      { frame: 22, x: 10, y: 38, w: 75, h: 42 }, // Still active
+      { frame: 23, x: 8, y: 40, w: 70, h: 40 },  // Active
+      { frame: 24, x: 5, y: 42, w: 68, h: 38 },  // Active
+      { frame: 25, x: 2, y: 44, w: 65, h: 36 },  // Active
+      { frame: 26, x: 0, y: 45, w: 62, h: 35 },  // Still hitting
+      { frame: 27, x: -2, y: 46, w: 60, h: 34 }, // Active
+      { frame: 28, x: -5, y: 47, w: 58, h: 33 }, // Active
+      { frame: 29, x: -7, y: 48, w: 55, h: 32 }, // Active
+      { frame: 30, x: -10, y: 49, w: 52, h: 31 },// Active
+      { frame: 31, x: -12, y: 50, w: 50, h: 30 },// Final hit
+      { frame: 32, x: -15, y: 51, w: 48, h: 29 } // Very last
     ],
     hurtbox: { x: -40, y: 0, w: 80, h: 100 },
     movement: { x: 3, y: 0 }
   },
   shoryu: {
-    frames: 58,
+    frames: 75,  // Increased recovery frames
     startup: 2,
     active: 15,
-    recovery: 41,
+    recovery: 58,  // Much longer recovery - more exposed
     damage: 35,
     hitboxes: [
       { frame: 2, x: -10, y: -20, w: 60, h: 80 },  // Start closer, cover more area
@@ -306,7 +323,14 @@ const attacks = {
       { frame: 16, x: -12, y: -25, w: 58, h: 85 }, // Final hit
       { frame: 17, x: -15, y: -20, w: 55, h: 80 }  // Last active
     ],
-    hurtbox: { x: -40, y: 0, w: 80, h: 100 },
+    hurtboxes: [
+      // NO HURTBOXES during active frames (invulnerable)
+      { frame: 18, x: -60, y: 0, w: 120, h: 100 }, // Recovery start - very exposed
+      { frame: 25, x: -55, y: 0, w: 110, h: 100 }, // Still very exposed
+      { frame: 35, x: -50, y: 0, w: 100, h: 100 }, // Gradually less exposed
+      { frame: 45, x: -45, y: 0, w: 90, h: 100 },  // Getting back to normal
+      { frame: 60, x: -50, y: 0, w: 80, h: 100 }   // Back to normal
+    ],
     invulnerable: true,
     invulnerableFrames: 17,
     movement: { x: 2, y: -8 }
@@ -568,14 +592,41 @@ class Fighter {
   getHurtbox() {
     if (!this.currentAttack) {
       return {
-        x: this.x - 40,  // Wider hurtbox, better centered
+        x: this.x - 50,  // Moved 1 pixel left for better centering
         y: this.y,
         w: 80,  // Increased back to 80 for better coverage
         h: 100
       };
     }
-    
+
     const attack = attacks[this.currentAttack];
+    
+    // Check for invulnerability (shoryu during active frames)
+    if (attack.invulnerable && this.attackFrame <= attack.invulnerableFrames) {
+      return null; // No hurtbox - invulnerable
+    }
+    
+    // Use dynamic hurtboxes if available
+    if (attack.hurtboxes) {
+      let currentHurtbox = null;
+      // Find the most recent hurtbox for this frame
+      for (const hurtbox of attack.hurtboxes) {
+        if (this.attackFrame >= hurtbox.frame) {
+          currentHurtbox = hurtbox;
+        }
+      }
+      
+      if (currentHurtbox) {
+        return {
+          x: this.x + (this.facing > 0 ? currentHurtbox.x : -currentHurtbox.x - currentHurtbox.w),
+          y: this.y + currentHurtbox.y,
+          w: currentHurtbox.w,
+          h: currentHurtbox.h
+        };
+      }
+    }
+
+    // Fallback to static hurtbox
     const hurtbox = attack.hurtbox;
     return {
       x: this.x + (this.facing > 0 ? hurtbox.x : -hurtbox.x - hurtbox.w),
@@ -583,9 +634,7 @@ class Fighter {
       w: hurtbox.w,
       h: hurtbox.h
     };
-  }
-  
-  resetOpponentHitTracking() {
+  }  resetOpponentHitTracking() {
     // Reset hit tracking for both players when this player's attack ends
     if (player1 && player1.lastHitByAttack === this.currentAttack) {
       player1.lastHitByAttack = null;
@@ -619,13 +668,13 @@ function create() {
   player2.scene = scene;
   
   // UI Text
-  uiText.health1 = this.add.text(50, 50, 'P1: 100', {
+  uiText.health1 = this.add.text(50, 75, 'P1: 100', {
     fontSize: '24px',
     fontFamily: 'Arial, sans-serif',
     color: '#00ff00'
   });
   
-  uiText.health2 = this.add.text(650, 50, 'P2: 100', {
+  uiText.health2 = this.add.text(650, 75, 'P2: 100', {
     fontSize: '24px',
     fontFamily: 'Arial, sans-serif',
     color: '#ff0000'
@@ -637,17 +686,24 @@ function create() {
     color: '#ffff00'
   }).setOrigin(0.5);
   
-  uiText.guards1 = this.add.text(50, 80, 'Guards: 0/3', {
+  uiText.guards1 = this.add.text(50, 110, 'Guards: 0/3', {
     fontSize: '16px',
     fontFamily: 'Arial, sans-serif',
     color: '#88ff88'
   });
   
-  uiText.guards2 = this.add.text(650, 80, 'Guards: 0/3', {
+  uiText.guards2 = this.add.text(650, 110, 'Guards: 0/3', {
     fontSize: '16px',
     fontFamily: 'Arial, sans-serif',
     color: '#ff8888'
   });
+  
+  // Round timer
+  uiText.timer = this.add.text(400, 50, '60', {
+    fontSize: '32px',
+    fontFamily: 'Arial, sans-serif',
+    color: '#ffffff'
+  }).setOrigin(0.5);
   
   // Instructions
   this.add.text(400, 100, 'P1: A-Left S-Attack D-Right | P2: ←-Left ↓-Attack →-Right', {
@@ -782,6 +838,26 @@ function drawSprite(sprite, x, y, color, facingRight = true) {
 function update(_time, delta) {
   if (gameState === 'gameover' || gameState === 'roundEnd') return;
   
+  // Update round timer
+  if (gameState === 'playing') {
+    if (roundStartTime === 0) roundStartTime = _time;
+    const elapsed = (_time - roundStartTime) / 1000;
+    roundTimer = Math.max(0, 60 - elapsed);
+    
+    // Check for timeout
+    if (roundTimer <= 0 && gameState === 'playing') {
+      // Time's up - player with more health wins
+      if (player1.health > player2.health) {
+        endRound('p1');
+      } else if (player2.health > player1.health) {
+        endRound('p2');
+      } else {
+        // Draw - nobody wins this round
+        resetRound();
+      }
+    }
+  }
+  
   // Process attack inputs
   player1.processAttackInput();
   player2.processAttackInput();
@@ -865,7 +941,7 @@ function checkCombatCollisions() {
   
   // Player 1 hitting Player 2
   for (const hitbox of p1Hitboxes) {
-    if (boxCollision(hitbox, p2Hurtbox)) {
+    if (p2Hurtbox && boxCollision(hitbox, p2Hurtbox)) {
       const hit = player2.takeDamage(hitbox.damage, 10, player1.currentAttack, player1.attackFrame);
       if (hit) {
         playTone(player1.scene, 400, 0.15);
@@ -880,7 +956,7 @@ function checkCombatCollisions() {
   
   // Player 2 hitting Player 1
   for (const hitbox of p2Hitboxes) {
-    if (boxCollision(hitbox, p1Hurtbox)) {
+    if (p1Hurtbox && boxCollision(hitbox, p1Hurtbox)) {
       const hit = player1.takeDamage(hitbox.damage, 10, player2.currentAttack, player2.attackFrame);
       if (hit) {
         playTone(player2.scene, 400, 0.15);
@@ -900,8 +976,12 @@ function boxCollision(box1, box2) {
          box1.y + box1.h > box2.y;
 }
 
-function endRound() {
-  if (player1.health <= 0) {
+function endRound(winner = null) {
+  if (winner === 'p1') {
+    player1.roundsWon++;
+  } else if (winner === 'p2') {
+    player2.roundsWon++;
+  } else if (player1.health <= 0) {
     player2.roundsWon++;
   } else {
     player1.roundsWon++;
@@ -970,10 +1050,36 @@ function endRound() {
         player2.hitStun = 0;
         player1.blockStun = 0;
         player2.blockStun = 0;
+        // Reset timer for new round
+        roundTimer = 60;
+        roundStartTime = 0;
         gameState = 'playing'; // Resume game
       }, 2000);
     }, 100);
   }
+}
+
+function resetRound() {
+  // Reset positions and states for draw rounds
+  player1.x = 200;
+  player2.x = 600;
+  player1.y = 400;
+  player2.y = 400;
+  player1.health = 100;
+  player2.health = 100;
+  player1.state = 'idle';
+  player2.state = 'idle';
+  player1.currentAttack = null;
+  player2.currentAttack = null;
+  player1.guardCount = 0;
+  player2.guardCount = 0;
+  player1.hitStun = 0;
+  player2.hitStun = 0;
+  player1.blockStun = 0;
+  player2.blockStun = 0;
+  roundTimer = 60;
+  roundStartTime = 0;
+  gameState = 'playing';
 }
 
 function updateUI() {
@@ -992,6 +1098,12 @@ function updateUI() {
   
   uiText.guards2.setText(`Guards: ${player2.guardCount}/3`);
   uiText.guards2.setColor(guardColor2);
+  
+  // Update timer
+  const timerText = Math.ceil(roundTimer);
+  const timerColor = roundTimer <= 10 ? '#ff0000' : '#ffffff';
+  uiText.timer.setText(timerText.toString());
+  uiText.timer.setColor(timerColor);
   
   // Update health bar colors based on health
   if (player1.health < 30) {
@@ -1033,6 +1145,9 @@ function restartGame() {
   player2.hitStun = 0;
   player1.blockStun = 0;
   player2.blockStun = 0;
+  // Reset timer
+  roundTimer = 60;
+  roundStartTime = 0;
   player1.invulnerableTimer = 0;
   player2.invulnerableTimer = 0;
   player1.attackButtonPressed = false;
@@ -1164,11 +1279,15 @@ function drawDebugInfo() {
   const hurtboxColor1 = player1.invulnerable ? 0xffff00 : 0x00ffff;
   const hurtboxColor2 = player2.invulnerable ? 0xffff00 : 0x00ffff;
   
-  graphics.lineStyle(2, hurtboxColor1);
-  graphics.strokeRect(p1Hurtbox.x, p1Hurtbox.y, p1Hurtbox.w, p1Hurtbox.h);
+  if (p1Hurtbox) {
+    graphics.lineStyle(2, hurtboxColor1);
+    graphics.strokeRect(p1Hurtbox.x, p1Hurtbox.y, p1Hurtbox.w, p1Hurtbox.h);
+  }
   
-  graphics.lineStyle(2, hurtboxColor2);
-  graphics.strokeRect(p2Hurtbox.x, p2Hurtbox.y, p2Hurtbox.w, p2Hurtbox.h);
+  if (p2Hurtbox) {
+    graphics.lineStyle(2, hurtboxColor2);
+    graphics.strokeRect(p2Hurtbox.x, p2Hurtbox.y, p2Hurtbox.w, p2Hurtbox.h);
+  }
   
   // Draw player collision boxes (GREEN) - Anti-overlap
   graphics.lineStyle(1, 0x00ff00);
